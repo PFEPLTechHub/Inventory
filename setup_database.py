@@ -6,8 +6,8 @@ def create_database_and_tables():
         # Connect to MySQL server without specifying database
         connection = mysql.connector.connect(
             host='localhost',
-            user='root',
-            password='root'
+            user='u221987201_Shayan123',
+            password='ShayanPFEPL@123'
         )
         
         if connection.is_connected():
