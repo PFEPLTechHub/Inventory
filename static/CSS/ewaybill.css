@@ -1,0 +1,103 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: left;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    color: black;
+}
+
+h1 {
+    text-align: center;
+    margin: 20px 0;
+    color: #262626;
+}
+
+table {
+    width: 75%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: white;
+}
+
+#projectsTable{
+    outline: 0.5px solid rgb(183, 169, 169); /* Adds a border around the entire table */
+
+}
+
+#productsTable{
+    outline: 0.5px solid rgb(183, 169, 169); /* Adds a border around the entire table */
+
+}
+
+
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+    font-size: 15px !important;
+}
+
+th {
+    background-color: lightgrey !important;
+}
+
+
+#projectsTable, #productsTable {
+    margin-bottom: 30px;
+}
+
+.container {
+    width: 75%;
+    background-color: white;
+    color: black;
+    margin-top: 5%;
+    border-radius: 5px;
+    border: 2px solid black;
+    overflow: auto;
+}
+
+.btn {
+    background-color: #262626;
+    color: white;
+    border-radius: 5px;
+    border: #262626;
+    height: 40px;
+    width: 120px;
+    text-align: center;
+    margin-top: 20px;
+    cursor: pointer;
+    font-size: medium;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background-color: #404040;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 75%;
+    margin-bottom: 20px;
+}
+
+.button-container button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #262626;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.button-container button:hover {
+    background-color: #404040;
+}

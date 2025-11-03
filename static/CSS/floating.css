@@ -1,0 +1,72 @@
+
+#floatingbody {
+  margin: 0;
+  padding: 0;
+  font-family: 'Soegi UI', Arial, sans-serif;
+  height: 2000px; /* Adjust the height to your preference */
+}
+
+#floatingButton {
+  position: fixed;
+  top: 20px; /* Adjust the distance from the top */
+  left: 20px; /* Adjust the distance from the left */
+  z-index: 9999;
+}
+
+#floatingBox {
+  display: none;
+  position: fixed;
+  top: 50px; /* Adjust the distance from the top */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(68, 68, 68, 0.914); /* Updated color */
+  padding: 20px;
+  border-radius: 15px; /* Added border-radius */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 9998;
+  animation: slideDown 0.5s ease forwards;
+  color: white; /* Font color */
+  font-weight: bold; /* Font bold */
+  max-width: calc(100% - 40px); /* Dynamic width */
+  text-align: center; /* Center text */
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translate(-50%, -100%);
+  }
+  100% {
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translate(-50%, 0);
+  }
+  100% {
+    transform: translate(-50%, -100%);
+  }
+}
+
+#okButton {
+display: block;
+margin-top: 10px;
+padding: 5px 10px;
+background-color: #404040; /* Updated color */
+color: #fff;
+border: none;
+border-radius: 15px; /* Added border-radius */
+cursor: pointer;
+float: right; /* Align to the right */
+text-align: center; /* Center the text horizontally */
+line-height: normal; /* Reset line height */
+}
+
+#okButton span {
+display: inline-block;
+vertical-align: middle;
+line-height: normal; /* Reset line height */
+}
+
+

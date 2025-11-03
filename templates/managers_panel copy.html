@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager List</title>
+    <style>
+        /* Styles (same as before) */
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .buttons {
+            text-align: center;
+        }
+        .edit-btn, .save-btn, .cancel-btn, .delete-btn {
+            margin: 0 5px;
+            padding: 5px 10px;
+        }
+        .edit-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .save-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+        .cancel-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        #add-manager-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid black;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">Manager List</h1>
+
+    <!-- <button id="add-manager-btn">Add Manager</button> -->
+
+    <table>
+        <thead>
+            <tr>
+                <th>Manager Name</th>
+                <th>Physical Location</th>
+                <th>Email</th>
+                <th>Phone</th>
+               
+                <!-- <th>Project</th> -->
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="managers-table-body">
+            <!-- Manager data will be dynamically inserted here -->
+        </tbody>
+    </table>
+    
+
+    <script>
+     //fetch and display managers    
+     function fetchManagers() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/get_all_managers', true);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+            console.log(data);
+            displayManagers(data.managers, data.projects); // Pass both managers and projects
+        } else {
+            console.error('Error fetching managers');
+        }
+    };
+    xhr.send();
+}
+
+// Display the managers in the table
+function displayManagers(managers, projects) {
+    var tableBody = document.getElementById('managers-table-body');
+    tableBody.innerHTML = '';  // Clear any previous content
+
+    managers.forEach(function(manager) {
+        var row = document.createElement('tr');
+
+        // Manager Name (display as a label)
+        var nameCell = document.createElement('td');
+        var nameLabel = document.createElement('label');
+        nameLabel.textContent = manager.Name;
+        nameCell.appendChild(nameLabel);
+        row.appendChild(nameCell);
+
+        // Physical Location (Dropdown from projects array)
+        var locationCell = document.createElement('td');
+        var locationSelect = document.createElement('select');
+
+        projects.forEach(function(project) {
+            var option = document.createElement('option');
+            option.value = project.project_id;  // Set the project_id as the value
+            option.textContent = project.Projects;
+
+            // Optional: auto-select a default (if available in manager data)
+            if (project.Projects === manager.PhysicalLocation) {
+                option.selected = true;
+            }
+
+            locationSelect.appendChild(option);
+        });
+
+        locationSelect.disabled = true; // Initially readonly
+        locationCell.appendChild(locationSelect);
+        row.appendChild(locationCell);
+
+        // Email
+        var emailCell = document.createElement('td');
+        var emailInput = document.createElement('input');
+        emailInput.type = 'text';
+        emailInput.value = manager.MailID;
+        emailInput.disabled = true;
+        emailCell.appendChild(emailInput);
+        row.appendChild(emailCell);
+
+        // Phone
+        var phoneCell = document.createElement('td');
+        var phoneInput = document.createElement('input');
+        phoneInput.type = 'text';
+        phoneInput.value = manager.PhoneNo;
+        phoneInput.disabled = true;
+        phoneCell.appendChild(phoneInput);
+        row.appendChild(phoneCell);
+
+        // Action Buttons (Edit, Save, Cancel, Delete)
+        var actionCell = document.createElement('td');
+        var editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.className = 'edit-btn';
+        editButton.addEventListener('click', function() {
+            enableEditing(row);
+        });
+
+        var saveButton = document.createElement('button');
+        saveButton.textContent = 'Save';
+        saveButton.className = 'save-btn';
+        saveButton.style.display = 'none';
+        saveButton.addEventListener('click', function() {
+            saveChanges(row, manager.manager_index_id, locationSelect.value); // Pass project_id
+        });
+
+        var cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+        cancelButton.className = 'cancel-btn';
+        cancelButton.style.display = 'none';
+        cancelButton.addEventListener('click', function() {
+            cancelEditing(row);
+        });
+
+        var deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.className = 'delete-btn';
+        deleteButton.addEventListener('click', function() {
+            deleteManager(manager.manager_index_id, manager.Name);
+        });
+
+        actionCell.appendChild(editButton);
+        actionCell.appendChild(saveButton);
+        actionCell.appendChild(cancelButton);
+        actionCell.appendChild(deleteButton);
+        row.appendChild(actionCell);
+
+        tableBody.appendChild(row);
+    });
+}
+
+       // Enable editing for a row
+function enableEditing(row) {
+    var inputs = row.querySelectorAll('input');
+    var locationSelect = row.querySelector('select');  // Get the location select dropdown
+    
+    // Enable the input fields and dropdown
+    inputs.forEach(function(input) {
+        input.disabled = false;
+    });
+    locationSelect.disabled = false; // Enable the Physical Location dropdown
+
+    // Hide the edit button, show save and cancel buttons
+    row.querySelector('.edit-btn').style.display = 'none';
+    row.querySelector('.save-btn').style.display = 'inline-block';
+    row.querySelector('.cancel-btn').style.display = 'inline-block';
+}
+
+// Save the changes to the row
+function saveChanges(row, managerId) {
+    var inputs = row.querySelectorAll('input');
+    var locationSelect = row.querySelector('select'); // Get the location select dropdown
+
+    // Prepare the data to be updated
+    var updatedData = {
+        Manager_index_id: managerId,
+        Email: inputs[0].value,
+        Phone: inputs[1].value,
+        PhysicalLocation: locationSelect.value // The project_id (not the name)
+    };
+
+    console.log("This is the data we are sending for updation:", updatedData);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/update_manager_details', true);
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            alert('Manager updated successfully');
+            fetchManagers(); // Re-fetch the manager data to reflect updates
+        } else {
+            alert('Error updating manager');
+        }
+    };
+    xhr.send(JSON.stringify(updatedData));
+}
+
+// Cancel editing and revert to the previous values
+function cancelEditing(row) {
+    fetchManagers(); // Re-fetch the manager data to reset the view
+}
+
+// Delete a manager
+function deleteManager(managerId, managerCode) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/delete_manager', true);
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            alert('Manager deleted successfully');
+            fetchManagers(); // Re-fetch the manager data to reflect the deletion
+        } else {
+            alert('Error deleting manager');
+        }
+    };
+    xhr.send(JSON.stringify({ Manager_index_id: managerId, manager_code: managerCode }));
+}
+
+// Fetch and display managers on page load
+fetchManagers();
+
+    </script>
+</body>
+</html>

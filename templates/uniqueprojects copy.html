@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Projects List</title>
+    <style>
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .disabled {
+            background-color: #f9f9f9;
+        }
+        .buttons {
+            text-align: center;
+        }
+        .edit-btn, .save-btn, .cancel-btn, .delete-btn {
+            margin: 0 5px;
+            padding: 5px 10px;
+        }
+        .edit-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .save-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+        .cancel-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        #add-project-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid black;
+            z-index: 1000;
+        }
+        /* .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        } */
+        /* Hide the columns by default */
+.toggle-column {
+    display: none;
+}
+
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">All Projects List</h1>
+
+    <button id="add-project-btn">Add Project</button>
+    <button id="toggle-columns-btn">Toggle Columns</button> <!-- New button to toggle columns -->
+
+    <table>
+        <thead>
+            <tr>
+                <th>Project</th>
+                <th class="toggle-column">Address</th>
+                <th class="toggle-column">GSTIN</th>
+                <th class="toggle-column">STATE</th>
+                <th class="toggle-column">State Code</th>
+                <th>Manager</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="projects-table-body">
+            <!-- Projects data will be dynamically inserted here -->
+        </tbody>
+    </table>
+
+    <div id="add-project-modal">
+        <h3>Add New Project</h3>
+        <label>Project: <input type="text" id="new-project-name"></label><br>
+        <label>Address: <input type="text" id="new-project-address"></label><br>
+        <label>GSTIN: <input type="text" id="new-project-gstin"></label><br>
+        <label>STATE: <input type="text" id="new-project-state"></label><br>
+        <label>State Code: <input type="text" id="new-project-state-code"></label><br>
+        <label>Manager: 
+            <select id="new-project-manager">
+            <!-- Dynamic manager options will be appended here -->
+            </select>
+        </label><br><br>
+        <button id="add-project-submit">Add this Project</button>
+        <button id="cancel-add-project">Cancel</button>
+    </div>
+
+    <div class="modal-overlay" id="modal-overlay"></div>
+
+    <script>
+
+let managers = []
+        // Fetch projects from the server
+        function fetchProjects() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/get_unique_projects', true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    console.log(data)
+                    managers = data.managers;
+
+                    displayProjects(data.projects, managers);
+
+                    populateManagerDropdown(managers);  // Pass managers list as an argument
+
+                    
+                } else {
+                    console.error('Error fetching projects');
+                }
+            };
+            xhr.send();
+        }
+         // Display the projects in the table
+         function displayProjects(projects, managers) {
+            var tableBody = document.getElementById('projects-table-body');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            projects.forEach(function(project, index) {
+                var row = document.createElement('tr');
+
+                // Project Name
+                var projectCell = document.createElement('td');
+                projectCell.textContent = project.Projects;
+                row.appendChild(projectCell);
+
+// Address
+var addressCell = document.createElement('td');
+addressCell.className = 'toggle-column';
+var addressInput = document.createElement('input');
+addressInput.type = 'text';
+addressInput.value = project.Address;
+addressInput.disabled = true;
+addressCell.appendChild(addressInput);
+row.appendChild(addressCell);
+
+// GSTIN
+var gstinCell = document.createElement('td');
+gstinCell.className = 'toggle-column';
+var gstinInput = document.createElement('input');
+gstinInput.type = 'text';
+gstinInput.value = project.GSTIN;
+gstinInput.disabled = true;
+gstinCell.appendChild(gstinInput);
+row.appendChild(gstinCell);
+
+// STATE
+var stateCell = document.createElement('td');
+stateCell.className = 'toggle-column';
+var stateInput = document.createElement('input');
+stateInput.type = 'text';
+stateInput.value = project.STATE;
+stateInput.disabled = true;
+stateCell.appendChild(stateInput);
+row.appendChild(stateCell);
+
+// State Code
+var stateCodeCell = document.createElement('td');
+stateCodeCell.className = 'toggle-column';
+var stateCodeInput = document.createElement('input');
+stateCodeInput.type = 'text';
+stateCodeInput.value = project.State_Code;
+stateCodeInput.disabled = true;
+stateCodeCell.appendChild(stateCodeInput);
+row.appendChild(stateCodeCell);
+
+
+                // Manager Dropdown
+                var managerCell = document.createElement('td');
+                var managerSelect = document.createElement('select');
+                managerSelect.disabled = true;
+
+                // Dynamically populate the dropdown with managers
+                managers.forEach(function(manager) {
+                    var option = document.createElement('option');
+                    option.value = manager.Name;
+                    option.textContent = manager.Name;
+                    managerSelect.appendChild(option);
+                });
+
+                managerSelect.value = project.Manager; // Set the existing manager
+                managerCell.appendChild(managerSelect);
+                row.appendChild(managerCell);
+
+                // Action Buttons (Edit, Save, Cancel, Delete)
+                var actionCell = document.createElement('td');
+                var editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.className = 'edit-btn';
+                editButton.addEventListener('click', function() {
+                    enableEditing(row);
+                });
+
+                var saveButton = document.createElement('button');
+                saveButton.textContent = 'Save';
+                saveButton.className = 'save-btn';
+                saveButton.style.display = 'none';
+                saveButton.addEventListener('click', function() {
+                    saveChanges(row, project.project_id, project.Projects, project.Address, project.GSTIN, project.STATE, project.State_Code);
+                });
+
+                var cancelButton = document.createElement('button');
+                cancelButton.textContent = 'Cancel';
+                cancelButton.className = 'cancel-btn';
+                cancelButton.style.display = 'none';
+                cancelButton.addEventListener('click', function() {
+                    cancelEditing(row);
+                });
+
+                var deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.className = 'delete-btn';
+                deleteButton.style.display = 'none';
+                deleteButton.addEventListener('click', function() {
+                    deleteProject(project.project_id);
+                    console.log(project.project_id);
+                });
+
+                actionCell.appendChild(editButton);
+                actionCell.appendChild(saveButton);
+                actionCell.appendChild(cancelButton);
+                actionCell.appendChild(deleteButton);
+                row.appendChild(actionCell);
+
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to toggle visibility of the address, GSTIN, STATE, and State Code columns
+        document.getElementById('toggle-columns-btn').addEventListener('click', function() {
+            const columns = document.querySelectorAll('.toggle-column');
+            columns.forEach(function(col) {
+                col.style.display = (col.style.display === 'none' || col.style.display === '') ? 'table-cell' : 'none';
+            });
+        });
+
+
+        // Enable editing for a row
+        function enableEditing(row) {
+            var inputs = row.querySelectorAll('input, select');
+            inputs.forEach(function(input) {
+                input.disabled = false;
+            });
+            row.querySelector('.edit-btn').style.display = 'none';
+            row.querySelector('.save-btn').style.display = 'inline-block';
+            row.querySelector('.cancel-btn').style.display = 'inline-block';
+            row.querySelector('.delete-btn').style.display = 'inline-block';
+        }
+    
+
+
+
+
+        // Save the changes to the row
+        function saveChanges(row, projectId, name) {
+            var inputs = row.querySelectorAll('input, select');
+            console.log("this is the inputs", inputs)
+            // Updated data from the row's input fields and dropdown
+            var updatedData = {
+                Project_id: projectId,
+                Project_name: name, // First column is the project name (text input)
+                Address: inputs[0].value,      // Second column is Address (input)
+                GSTIN: inputs[1].value,        // Third column is GSTIN (input)
+                STATE: inputs[2].value,        // Fourth column is STATE (input)
+                State_Code: inputs[3].value,    // Fifth column is State Code (input)
+                Manager: inputs[4].value // To get the text of the selected option
+            };
+    
+            console.log("Updated project data:");
+            console.log("thisis ",updatedData);
+    
+            // Create the AJAX request to send updated data
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/update_project_details', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    alert('Project updated successfully');
+                    fetchProjects(); // Refresh the project list after successful update
+                } else {
+                    console.error('Error updating project');
+                }
+            };
+    
+            // Send the updated data as JSON
+            xhr.send(JSON.stringify(updatedData));
+    
+            cancelEditing(row); // Disable the inputs again after saving
+        }
+    
+        // Cancel editing and revert to original state
+        function cancelEditing(row) {
+            var inputs = row.querySelectorAll('input, select');
+            inputs.forEach(function(input) {
+                input.disabled = true;
+            });
+            row.querySelector('.edit-btn').style.display = 'inline-block';
+            row.querySelector('.save-btn').style.display = 'none';
+            row.querySelector('.cancel-btn').style.display = 'none';
+            row.querySelector('.delete-btn').style.display = 'none';
+        }
+    
+// Delete project by project name
+function deleteProject(project_id) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/delete_project', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            try {
+                const response = JSON.parse(xhr.responseText);
+                if (response.message) {
+                    alert(response.message); // Show success message
+                    fetchProjects(); // Refresh the project list after successful delete
+                }
+            } catch (e) {
+                console.error('Failed to parse server response:', e);
+                alert('Something went wrong, please try again.');
+            }
+        } else {
+            console.error('Error deleting project:', xhr.responseText);
+            alert('Error deleting project: ' + xhr.status + ' - ' + xhr.statusText);
+        }
+    };
+
+    xhr.onerror = function() {
+        console.error('Network error occurred.');
+        alert('Network error. Please check your connection and try again.');
+    };
+
+    try {
+        xhr.send(JSON.stringify({ project_id: project_id }));
+    } catch (e) {
+        console.error('Error sending request:', e);
+        alert('An error occurred while sending the request.');
+    }
+}
+
+    
+        // Add project modal
+        document.getElementById('add-project-btn').addEventListener('click', function() {
+            document.getElementById('add-project-modal').style.display = 'block';
+            document.getElementById('modal-overlay').style.display = 'block';
+        });
+    
+        document.getElementById('cancel-add-project').addEventListener('click', function() {
+            document.getElementById('add-project-modal').style.display = 'none';
+            document.getElementById('modal-overlay').style.display = 'none';
+        });
+    
+        document.getElementById('add-project-submit').addEventListener('click', function() {
+            var newProject = {
+                Project: document.getElementById('new-project-name').value,
+                Address: document.getElementById('new-project-address').value,
+                GSTIN: document.getElementById('new-project-gstin').value,
+                STATE: document.getElementById('new-project-state').value,
+                State_Code: document.getElementById('new-project-state-code').value,
+                Manager: document.getElementById('new-project-manager').value
+            };
+    
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/add_new_project', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    alert('Project added successfully');
+                    fetchProjects(); // Refresh project list after adding new project
+                    document.getElementById('add-project-modal').style.display = 'none';
+                    document.getElementById('modal-overlay').style.display = 'none';
+                } else {
+                    console.error('Error adding project');
+                }
+            };
+            xhr.send(JSON.stringify(newProject));
+        });
+    
+// Function to dynamically populate the manager dropdown with an array passed as an argument
+function populateManagerDropdown(managers) {
+    const managerDropdown = document.getElementById('new-project-manager');
+    
+    // Clear existing options (if any)
+    managerDropdown.innerHTML = '';
+
+    // // Add a placeholder option
+    // const defaultOption = document.createElement('option');
+    // defaultOption.textContent = '-- Select Manager --';
+    // defaultOption.value = '';
+    // managerDropdown.appendChild(defaultOption);
+
+    // Loop through the managers array and create option elements
+    managers.forEach(manager => {
+        const option = document.createElement('option');
+        option.value = manager.ID; // Option value will be the manager's ID
+        option.textContent = manager.ID; // Option text will display the manager's name
+        managerDropdown.appendChild(option);
+    });
+}
+
+        // Fetch projects when the page loads
+        window.onload = fetchProjects;
+    </script>
+    
+</body>
+</html>

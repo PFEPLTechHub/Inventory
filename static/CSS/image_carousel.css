@@ -1,0 +1,94 @@
+/* Reset & base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  html, body {
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+    overflow: hidden; /* no vertical scroll */
+  }
+  
+  /* Top Bar */
+  .top-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 56px;
+    background: #111;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    z-index: 100;
+  }
+  .top-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: #fff;
+    font-size: 1.4rem;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  /* Carousel Preview */
+  .preview-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding-top: 56px;              /* below top bar */
+    height: calc(100vh - 56px - 100px); /* leave room for thumbnail bar */
+  }
+  .side-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    padding: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .preview-row {
+    display: flex;
+    gap: 16px;
+  }
+  .preview-img {
+    width: 500px;      /* medium size */
+    height: 500px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #444;
+    cursor: pointer;
+  }
+  
+  /* Thumbnail Strip */
+.thumbnail-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 80px;
+    background: #111;
+    display: flex;
+    justify-content: center; /* Center the thumbnails */
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px;
+    overflow-x: auto; /* horizontal scroll if many thumbs */
+  }
+  .thumb-img {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    cursor: pointer;
+  }
+  .thumb-img.active {
+    border-color: #fff;
+  }
+  

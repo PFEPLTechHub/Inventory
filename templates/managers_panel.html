@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager List</title>
+    <style>
+        /* Styles (same as before) */
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .buttons {
+            text-align: center;
+        }
+        .edit-btn, .save-btn, .cancel-btn, .delete-btn {
+            margin: 0 5px;
+            padding: 5px 10px;
+        }
+        .edit-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .save-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+        .cancel-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        #add-manager-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid black;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">Manager List</h1>
+
+    <!-- <button id="add-manager-btn">Add Manager</button> -->
+
+    <table>
+        <thead>
+            <tr>
+                <th>Manager Name</th>
+                <th>Physical Location</th>
+                <th>Email</th>
+                <th>Phone</th>
+               
+                <!-- <th>Project</th> -->
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="managers-table-body">
+            <!-- Manager data will be dynamically inserted here -->
+        </tbody>
+    </table>
+    
+
+    <script>
+     //fetch and display managers    
+function fetchManagers() {
+    console.log("Starting fetchManagers...");
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/get_all_managers', true);
+    xhr.onload = function() {
+        console.log("fetchManagers response status:", xhr.status);
+        console.log("fetchManagers response text:", xhr.responseText);
+        
+        if (xhr.status === 200) {
+            try {
+                var data = JSON.parse(xhr.responseText);
+                console.log("Parsed data:", data);
+                console.log("Managers count:", data.managers ? data.managers.length : 'undefined');
+                console.log("Projects count:", data.projects ? data.projects.length : 'undefined');
+                
+                if (data.managers && data.projects) {
+                    displayManagers(data.managers, data.projects); // Pass both managers and projects
+                } else {
+                    console.error("Missing managers or projects data:", data);
+                }
+            } catch (e) {
+                console.error("Error parsing JSON:", e);
+                console.error("Raw response:", xhr.responseText);
+            }
+        } else {
+            console.error('Error fetching managers. Status:', xhr.status);
+            console.error('Response:', xhr.responseText);
+        }
+    };
+    xhr.onerror = function() {
+        console.error('Network error in fetchManagers');
+    };
+    xhr.send();
+}
+
+
+// Display the managers in the table
+function displayManagers(managers, projects) {
+    console.log("displayManagers called with:", managers.length, "managers and", projects.length, "projects");
+    
+    var tableBody = document.getElementById('managers-table-body');
+    if (!tableBody) {
+        console.error("Could not find managers-table-body element");
+        return;
+    }
+    
+    tableBody.innerHTML = '';  // Clear any previous content
+
+    console.log('Managers data received:', managers);
+    console.log('Projects data received:', projects);
+
+    if (!managers || managers.length === 0) {
+        console.warn("No managers data to display");
+        return;
+    }
+
+    managers.forEach(function(manager, index) {
+        console.log('Processing manager', index + 1, ':', manager.Name, 'Physical_location:', manager.Physical_location, 'Type:', typeof manager.Physical_location);
+        
+        var row = document.createElement('tr');
+
+        // Manager Name (display as a label)
+        var nameCell = document.createElement('td');
+        var nameLabel = document.createElement('label');
+        nameLabel.textContent = manager.Name;
+        nameCell.appendChild(nameLabel);
+        row.appendChild(nameCell);
+
+        // Physical Location (Dropdown from projects array)
+        var locationCell = document.createElement('td');
+        var locationSelect = document.createElement('select');
+
+        // Add a default "Select Project" option
+        var defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Select Project';
+        defaultOption.selected = manager.Physical_location === null || manager.Physical_location === undefined || manager.Physical_location === '';
+        locationSelect.appendChild(defaultOption);
+
+        // Loop through all projects to populate the dropdown
+        projects.forEach(function(project) {
+            var option = document.createElement('option');
+            option.value = project.project_id;          // Set project_id as value
+            option.textContent = project.Projects;      // Show project name in dropdown
+
+            // Match manager's assigned project by comparing IDs
+            // Handle null/undefined Physical_location values
+            var managerLocation = manager.Physical_location;
+            if (managerLocation !== null && managerLocation !== undefined && managerLocation !== '') {
+                if (parseInt(managerLocation) === project.project_id) {
+                    option.selected = true;
+                }
+            } else {
+                // If Physical_location is null/undefined, select the first option or show "Select Project"
+                if (project.project_id === 1) { // Assuming 1 is your default project_id, adjust as needed
+                    option.selected = true;
+                }
+            }
+
+            locationSelect.appendChild(option);
+        });
+
+        locationSelect.disabled = true; // Initially readonly
+        locationCell.appendChild(locationSelect);
+        row.appendChild(locationCell);
+
+        // Email
+        var emailCell = document.createElement('td');
+        var emailInput = document.createElement('input');
+        emailInput.type = 'text';
+        emailInput.value = manager.MailID;
+        emailInput.disabled = true;
+        emailCell.appendChild(emailInput);
+        row.appendChild(emailCell);
+
+        // Phone
+        var phoneCell = document.createElement('td');
+        var phoneInput = document.createElement('input');
+        phoneInput.type = 'text';
+        phoneInput.value = manager.PhoneNo;
+        phoneInput.disabled = true;
+        phoneCell.appendChild(phoneInput);
+        row.appendChild(phoneCell);
+
+        // Action Buttons (Edit, Save, Cancel, Delete)
+        var actionCell = document.createElement('td');
+        var editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.className = 'edit-btn';
+        editButton.addEventListener('click', function() {
+            enableEditing(row);
+        });
+
+        var saveButton = document.createElement('button');
+        saveButton.textContent = 'Save';
+        saveButton.className = 'save-btn';
+        saveButton.style.display = 'none';
+        saveButton.addEventListener('click', function() {
+            saveChanges(row, manager.manager_index_id, locationSelect.value); // Pass project_id
+        });
+
+        var cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+        cancelButton.className = 'cancel-btn';
+        cancelButton.style.display = 'none';
+        cancelButton.addEventListener('click', function() {
+            cancelEditing(row);
+        });
+
+        var deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.className = 'delete-btn';
+        deleteButton.addEventListener('click', function() {
+            deleteManager(manager.manager_index_id, manager.Name);
+        });
+
+        actionCell.appendChild(editButton);
+        actionCell.appendChild(saveButton);
+        actionCell.appendChild(cancelButton);
+        actionCell.appendChild(deleteButton);
+        row.appendChild(actionCell);
+
+        tableBody.appendChild(row);
+    });
+}
+
+       // Enable editing for a row
+function enableEditing(row) {
+    var inputs = row.querySelectorAll('input');
+    var locationSelect = row.querySelector('select');  // Get the location select dropdown
+    
+    // Enable the input fields and dropdown
+    inputs.forEach(function(input) {
+        input.disabled = false;
+    });
+    locationSelect.disabled = false; // Enable the Physical Location dropdown
+
+    // Hide the edit button, show save and cancel buttons
+    row.querySelector('.edit-btn').style.display = 'none';
+    row.querySelector('.save-btn').style.display = 'inline-block';
+    row.querySelector('.cancel-btn').style.display = 'inline-block';
+}
+
+// Save the changes to the row
+function saveChanges(row, managerId) {
+    var inputs = row.querySelectorAll('input');
+    var locationSelect = row.querySelector('select'); // Get the location select dropdown
+
+    // Prepare the data to be updated
+    var updatedData = {
+        Manager_index_id: managerId,
+        Email: inputs[0].value,
+        Phone: inputs[1].value,
+        PhysicalLocation: locationSelect.value === '' ? null : parseInt(locationSelect.value)  // Handle empty value as null
+    };
+
+    console.log("This is the data we are sending for updation:", updatedData);
+    console.log("Location select value:", locationSelect.value);
+    console.log("Location select options:", Array.from(locationSelect.options).map(opt => ({value: opt.value, text: opt.text, selected: opt.selected})));
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/update_manager_details', true);
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhr.onload = function() {
+        console.log("Update response status:", xhr.status);
+        console.log("Update response text:", xhr.responseText);
+        
+        if (xhr.status === 200) {
+            alert('Manager updated successfully');
+            console.log("About to fetch managers after update...");
+            fetchManagers(); // Re-fetch the manager data to reflect updates
+            /// ✅ Prepare payload
+            const payload = { phone: updatedData.Phone };
+            console.log("📤 Sending manager update to bot with payload:", payload);
+
+            // ✅ Send notification to bot with only PhoneNo
+            fetch('http://localhost:3000/api/notify/manager-update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(res => {
+                console.log("📥 Bot response status:", res.status);
+                return res.text();
+            })
+            .then(text => {
+                try {
+                    const botRes = JSON.parse(text);
+                    console.log("✅ Bot manager update webhook sent:", botRes);
+                } catch (err) {
+                    console.error("❌ Failed to parse bot response:", text);
+                    console.error("🧾 Raw response text:", text);
+                }
+            })
+            .catch(err => {
+                console.warn("⚠️ Failed to notify Telegram bot:", err.message);
+            });
+
+        } else {
+            alert('Error updating manager');
+        }
+    };
+    xhr.send(JSON.stringify(updatedData));
+}
+
+// Cancel editing and revert to the previous values
+function cancelEditing(row) {
+    fetchManagers(); // Re-fetch the manager data to reset the view
+}
+
+// Delete a manager
+function deleteManager(managerId, managerCode) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/delete_manager', true);
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            alert('Manager deleted successfully');
+            fetchManagers(); // Re-fetch the manager data to reflect the deletion
+        } else {
+            alert('Error deleting manager');
+        }
+    };
+    xhr.send(JSON.stringify({ Manager_index_id: managerId, manager_code: managerCode }));
+}
+
+// Fetch and display managers on page load
+console.log("Page loaded, calling fetchManagers...");
+fetchManagers();
+
+    </script>
+</body>
+</html>

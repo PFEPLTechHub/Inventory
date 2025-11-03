@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Receiver Table with Filters</title>
+  <script src="https://cdn.jsdelivr.net/npm/awesomplete@1.1.5/awesomplete.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/awesomplete@1.1.5/awesomplete.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .filter-bar input[type="text"] {
+      padding: 8px;
+      font-size: 14px;
+      width: 180px;
+    }
+
+    .filter-bar button {
+      padding: 8px 16px;
+      background-color: black;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f4f4f4;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="filter-bar">
+    <input type="text" id="category" placeholder="Category" autocomplete="on">
+    <input type="text" id="name" placeholder="Name" autocomplete="on">
+    <input type="text" id="make" placeholder="Make" autocomplete="on">
+    <input type="text" id="model" placeholder="Model" autocomplete="on">
+    <button type="button" id="submitFilter">Submit</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Sr No.</th>
+        <th>Form No.</th>
+        <th>Initiation Date</th>
+        <th>Completion Date</th>
+        <th>Source</th>
+        <th>Sender Name</th>
+        <th>Sender Condition</th>
+        <th>Receiver Name</th>
+        <th>Receiver Condition</th>
+        <th>Destination</th>
+      </tr>
+    </thead>
+    <tbody id="transactionTableBody">
+      <!-- Data rows will be populated here -->
+    </tbody>
+  </table>
+  <script src="../static/JS/ProductHistory.js"></script>
+
+</body>
+</html>
+

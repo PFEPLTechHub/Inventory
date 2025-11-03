@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            width: 80%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>            
+    <button id="back-button" class="back-button" type="button" >&lt;</button>
+
+    <div class="container">
+        <table id="registrationTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>ID</th>
+                    <th>Mail</th>
+                    <th>Phone Number</th>
+                    <th>Project</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be inserted here dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "/get_pending_registrations_data", true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const data = JSON.parse(xhr.responseText);
+                    console.log("This is the data");
+                    console.log(data);
+                    const tableBody = document.getElementById('registrationTable').getElementsByTagName('tbody')[0];
+
+                    data.forEach(item => {
+                        const row = document.createElement('tr');
+
+                        const nameCell = document.createElement('td');
+                        nameCell.textContent = item.ID;
+                        row.appendChild(nameCell);
+
+                        const idCell = document.createElement('td');
+                        idCell.textContent = item.Name;
+                        row.appendChild(idCell);
+
+                        const mailCell = document.createElement('td');
+                        mailCell.textContent = item.Mail;
+                        row.appendChild(mailCell);
+
+                        const phoneCell = document.createElement('td');
+                        phoneCell.textContent = item.PhoneNo;
+                        row.appendChild(phoneCell);
+
+                        const projectCell = document.createElement('td');
+                        projectCell.textContent = item.Project;
+                        row.appendChild(projectCell);
+
+                        const actionCell = document.createElement('td');
+                        const acceptBtn = document.createElement('button');
+                        acceptBtn.textContent = 'Accept';
+                        acceptBtn.classList.add('btn');
+                        acceptBtn.addEventListener('click', function() {
+                            sendRequest('/approve_employee', item.ID);
+                        });
+
+                        const rejectBtn = document.createElement('button');
+                        rejectBtn.textContent = 'Reject';
+                        rejectBtn.classList.add('btn');
+                        rejectBtn.addEventListener('click', function() {
+                            sendRequest('/disapprove_employee', item.ID);
+                        });
+
+                        actionCell.appendChild(acceptBtn);
+                        actionCell.appendChild(rejectBtn);
+                        row.appendChild(actionCell);
+
+                        tableBody.appendChild(row);
+                    });
+                }
+            };
+            xhr.send();
+        };
+
+        function sendRequest(url, employeeId) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log(xhr.responseText);
+                    // Optionally, you can refresh the data or update the UI here
+                }
+            };
+            xhr.send(JSON.stringify({ employee_id: employeeId }));
+        }
+
+        document.getElementById('back-button').addEventListener('click', function() {
+            window.location.href = '/manageAdminPanel';
+        });
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Inventory</title>
+    <link rel="stylesheet" href="../static/CSS/inventory.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+</head>
+<body>
+    <div class="my-container">
+        <div class="my-container-header">
+            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">></button>
+            <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+                <div class="offcanvas-header">
+                    <div class="my-offcanvas-header">
+                        <div class="header-image">
+                            <img src="../static/Images/side-menu-header.PNG" alt="user image">
+                        </div>
+                        <div class="header-userid">
+                            <h6 id="userid">User ID</h6>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>                   
+                </div>
+
+                <div class="offcanvas-body">
+                    
+                    <div class="section-container">
+                        <div class="button-container">
+                            <button id="homepageBtn" class="home-page">Home Page</button>
+                        </div>
+                        
+                    </div>
+                    <div class="section-container" id="sendreceivesection">
+                        <div class="button-container">
+                            <button id="sendItemsBtn">Send Items</button>
+                            <button id="receiveItemsBtn">Receive Items</button>
+                        </div>
+                    </div>
+                    <div class="section-container" id="approveitemsection">
+                        <div class="button-container">
+                            <button id="approveItemsBtn" class="approval-items">Approve Items</button>
+                        </div>
+                    </div>
+                    <div class="section-container" id="inventorysection">
+                        <div class="button-container">
+                            <button id="myInventoryBtn">My Inventory</button>
+                            <button id="projectInventoryBtn">Project Inventory</button>
+                            <button id="totalInventoryBtn">Total Inventory</button>
+                            <button id="inventoryMapBtn">Inventory Map</button>
+                        </div>
+                    </div>
+                    <div class="section-container" id="transactionsection">
+                        <div class="button-container">
+                            <button id="transactionProgressBtn">Transaction Progress</button>
+                            <button id="transactionHistoryBtn">Transaction History</button>
+                        </div>
+                    </div>
+                    <div class="section-container" id="addeletesection">
+                        <div class="button-container">
+                            <button id="additemBtn">Add Item</button>
+                            <button id="deleteitemBtn">Delete Item</button>
+                        </div>
+                    </div>
+                    <div class="section-container" id="emppanelsection">
+                        <div class="button-container">
+                            <button id="emppanel">Employee Panel</button>
+                        </div>
+                    </div>
+                    <div class="section-container" id="myprofilesection">
+                        <div class="button-container">
+                            <button id="myprofileBtn">My Profile</button>
+                        </div>
+                    </div>
+                    <div class="logout-button-container">
+                        <button id="logoutBtn">LOGOUT</button>
+                    </div>
+                </div>
+            </div>
+            <div class="page-name">
+                <h2>MY INVENTORY</h2>
+            </div>
+            <div class="company-logo">
+                <img src="../static/Images/logo.png" alt="PFEPL Logo" width="85" height="85">
+            </div>
+        </div>
+        <input class="form-control" style="width: 50%;margin-left: 25%;border: solid 1px black;" id="myInput" type="text" placeholder="Search..">
+
+        <div class="tabledivision">
+            <table class="table table-striped" id="data-table"> 
+                <thead>
+                    <tr id="header-row">
+                        <th>Serial No</th>
+                        <th>Category</th>
+                        <th>Name</th>
+                        <th>Make</th>
+                        <th>Model</th>
+                        <th>Product Serial</th>
+                        <th>Condition</th>
+                        <th>Current Project</th>
+                        <th>Current Owner</th>
+                        <th>Handover Date</th>
+                        <th>Set</th>
+                        <th>Remarks</th>
+                    </tr>
+                    <tr id="filter-row">
+                        <th></th>
+                        <th><select id="filter-category"><option></option></select></th>
+                        <th><select id="filter-name"><option></option></select></th>
+                        <th><select id="filter-make"><option></option></select></th>
+                        <th><select id="filter-model"><option></option></select></th>
+                        <th><select id="filter-productserial"><option></option></select></th>
+                        <th><select id="filter-condition"><option></option></select></th>
+                        <th><select id="filter-project"><option></option></select></th>
+                        <th><select id="filter-empname"><option></option></select></th>
+                        <th><select id="filter-handoverdate"><option></option></select></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div> 
+
+    <script>
+        var sendItemsUrl = "{{ url_for('page_routes.send_items') }}";
+        var receiveItemsUrl = "{{ url_for('page_routes.receive_table') }}";
+        var approveItemsUrl = "{{ url_for('page_routes.approvetable') }}";
+        var transactionProgressUrl = "{{ url_for('page_routes.transactionprogresstable') }}";
+        var transactionHistoryUrl = "{{ url_for('page_routes.transactionhistorytable') }}";
+        
+        var myInventoryUrl = "{{ url_for('page_routes.my_invent') }}";
+        var projectInventoryUrl = "{{ url_for('page_routes.project_invent') }}";
+        var totalInventoryUrl = "{{ url_for('page_routes.invent') }}";
+        var logoutBtnUrl = "{{ url_for('page_routes.index') }}";
+        var homepageBtnUrl = "{{ url_for('page_routes.homepage') }}";
+        var myprofileBtnUrl = "{{ url_for('page_routes.myprofilepage') }}";
+
+    </script>
+
+    <script src="../static/JS/myinvent.js"></script>
+    <script src="../static/JS/floating.js"></script>
+    <script src="{{ url_for('static', filename='JS/side_pane.js') }}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

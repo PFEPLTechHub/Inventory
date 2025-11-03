@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eway Bill Data</title>
+  <link rel="stylesheet" href="../static/CSS/ewaybill.css"/>
+  <style>
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    thead th { background: #f6f6f6; }
+  </style>
+</head>
+<body>
+  <h1>Eway Bill Data</h1>
+  <h4 style="color:#df1818;">
+    Note: This page is only for data displaying purpose. Kindly copy values and paste in Ewaybill Excel sheet provided by the Admin.
+  </h4>
+
+  <h2>Projects Table</h2>
+  <table id="projectsTable">
+    <thead>
+      <tr>
+        <th>Project (Source/Destination)</th>
+        <th>Address</th>
+        <th>GSTIN</th>
+        <th>State</th>
+        <th>State Code</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Products Table</h2>
+  <table id="productsTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Category</th>
+        <th>HSN Code</th>
+        <th>Rate</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const href = window.location.href.replace(/\/+$/, '');
+      const transactionUid = decodeURIComponent(href.substring(href.lastIndexOf('/') + 1));
+
+      fetch(`/ewaybill_data/${encodeURIComponent(transactionUid)}`)
+        .then(res => res.json())
+        .then(payload => {
+          console.log('[ewaybill] payload:', payload);
+
+          if (payload && payload.error) {
+            alert(`Failed to load ewaybill data:\n${payload.error}`);
+            return;
+          }
+
+          // --- Projects table ---
+          const projectsBody = document.querySelector('#projectsTable tbody');
+          projectsBody.innerHTML = '';
+
+          const s = (payload.projects && payload.projects.source) || {};
+          const d = (payload.projects && payload.projects.destination) || {};
+
+          const rows = [
+            {
+              ProjectName: s.Projects ? `${s.Projects} (Source)` : '-',
+              Address: s.Address || '-',
+              GSTIN: s.GSTIN || '-',
+              State: s.STATE || '-',
+              'State Code': s.State_Code || '-'
+            },
+            {
+              ProjectName: d.Projects ? `${d.Projects} (Destination)` : '-',
+              Address: d.Address || '-',
+              GSTIN: d.GSTIN || '-',
+              State: d.STATE || '-',
+              'State Code': d.State_Code || '-'
+            }
+          ];
+
+          rows.forEach(row => {
+            const tr = document.createElement('tr');
+
+            const td0 = document.createElement('td');
+            td0.textContent = row.ProjectName;
+            tr.appendChild(td0);
+
+            ['Address','GSTIN','State','State Code'].forEach(key => {
+              const td = document.createElement('td');
+              td.textContent = row[key];
+              tr.appendChild(td);
+            });
+
+            projectsBody.appendChild(tr);
+          });
+
+          // --- Products table ---
+          const productsBody = document.querySelector('#productsTable tbody');
+          productsBody.innerHTML = '';
+
+          const products = Array.isArray(payload.products) ? payload.products : [];
+          if (products.length === 0) {
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            td.colSpan = 4; // now only 4 columns
+            td.textContent = 'No products found for this transaction.';
+            tr.appendChild(td);
+            productsBody.appendChild(tr);
+          } else {
+            products.forEach(p => {
+              const tr = document.createElement('tr');
+              const cells = [
+                p.Name || '-',
+                p.Category || '-',
+                p.HSN_Code || '-',
+                p.Rate || '-'
+              ];
+              cells.forEach(val => {
+                const td = document.createElement('td');
+                td.textContent = val;
+                tr.appendChild(td);
+              });
+              productsBody.appendChild(tr);
+            });
+          }
+        })
+        .catch(err => {
+          console.error('[ewaybill] fetch error:', err);
+          alert('Failed to load ewaybill data. See console for details.');
+        });
+    });
+  </script>
+</body>
+</html>

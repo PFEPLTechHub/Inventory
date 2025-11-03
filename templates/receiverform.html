@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receiver Form</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/receiverform.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/floating.css') }}">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<style>
+/* Enhanced upload button styles */
+.click-photo-icon {
+    cursor: pointer !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
+    display: inline-block !important;
+    width: 40px !important;
+    height: 40px !important;
+    text-align: center !important;
+    line-height: 40px !important;
+    border: 2px solid rgba(138, 43, 226, 0.3) !important;
+    border-radius: 5px !important;
+    background-color: rgba(138, 43, 226, 0.1) !important;
+    color: rgba(138, 43, 226, 0.8) !important;
+    transition: all 0.3s ease !important;
+}
+
+.click-photo-icon:hover {
+    background-color: rgba(138, 43, 226, 0.2) !important;
+    border-color: rgba(138, 43, 226, 0.6) !important;
+    transform: scale(1.1) !important;
+}
+
+/* Make sure the upload column is visible */
+.mainTable td:nth-child(14) {
+    text-align: center !important;
+    padding: 10px !important;
+    min-width: 60px !important;
+}
+
+/* Debug styles - remove in production */
+.debug-info {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin: 5px 0;
+    font-size: 12px;
+    color: #666;
+}
+</style>
+<body>
+    <div class="my-container">
+        <div class="my-container-header">
+            <button id="back-button" class="back-button" type="button">&lt;</button>
+            <div class="page-name">
+                <h2>RECEIVER FORM</h2>
+            </div>
+            <div class="company-logo">
+                <img src="{{ url_for('static', filename='Images/logo.png') }}" alt="PFEPL Logo" width="85" height="85">
+            </div>
+        </div>
+
+        <div class="container">
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <th>Form NO.</th>
+                        <td id="formNo"></td>
+                        <th>E-WAY BILL NO</th>
+                        <td id="ewaybillno"></td>
+                        
+                    </tr>
+                    <tr>
+                        <th>Initiation Date</th>
+                        <td id="InitiationDate"></td>
+                        <th>Completion Date</th>
+                        <td> - </td>
+                       
+                    </tr>
+                    <tr>
+                        <th>Source</th>
+                        <td id="Source"></td>
+                        <th>Destination</th>
+                        <td id="Destination"></td>
+                    </tr>
+                    
+                    <tr>
+                        <th>Sender</th>
+                        <td id="Sender"></td>
+                        <th>Receiver</th>
+                        <td id="Receiver"></td>
+                    </tr>
+
+                    <tr>
+                        <th>Sender Manager</th>
+                        <td id="Sender-manager"></td>
+                        <th>Receiver Manager</th>
+                        <td id="Receiver-manager"></td>
+                    </tr>
+                    <tr id="ewaybillreason">
+                        <th>No Eway bill reason</th>
+                        <td colspan="3" id="ewaybillreasondatatd"></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+
+            <!-- Debug panel - remove in production -->
+            <div id="debugPanel" class="debug-info" style="display: none;">
+                <strong>Debug Info:</strong>
+                <div id="debugContent">Loading...</div>
+                <button onclick="ensureUploadButtonsVisible()" style="margin-left: 10px; padding: 5px 10px;">Force Add Upload Buttons</button>
+                <button onclick="document.getElementById('debugPanel').style.display='none'" style="margin-left: 10px; padding: 5px 10px;">Hide</button>
+            </div>
+            
+            <table class="mainTable" id="mainTable">
+                <thead>
+                    <tr>
+                        <th>Selection</th>
+                        <th>Serial No</th>
+                        <th>Set</th>
+                        <th>Category</th>
+                        <th>Name</th>
+                        <th>Make</th>
+                        <th>Model</th>
+                        <th>Product Serial</th> 
+                        
+                        <th>Condition (Sender)</th>
+                        <th>Remarks (Sender)</th>
+                        <th>Image (Sender)</th>
+                        <th>Condition (Receiver)</th>
+                        <th>Remarks (Receiver)</th>
+                        <th>Image (Receiver)</th>
+
+                        
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+            <div class="my-container-footer">
+                <button class="ask-approval-button" id="ask-approval-button">ASK APPROVAL TO RECEIVE</button>
+                <div class="my-container-footer-top" id="remarksContainer">
+                    <p id="forewaybill">Disapprove Remark :</p>
+                    <input type="text" id="disapproveremarks" name="disapproveremarks">
+                </div>
+                <button class="ask-approval-button" id="disapproveButton">DISAPPROVE TRANSACTION</button>
+            </div>
+        </div>
+
+
+        
+    <div id="floatingBox">
+        <!-- Content of the floating box -->
+        <span id="messageText"></span>
+        <button id="okButton"><span>OK</span></button>
+    </div>
+    <script src="{{ url_for('static', filename='JS/receiverform.js') }}"></script>
+    <script src="{{ url_for('static', filename='JS/floating.js') }}"></script>
+
+    <script>
+        document.getElementById('back-button').addEventListener('click', function() {
+            window.location.href = '/receive_table';
+        });
+        
+        // Add keyboard shortcut to show debug panel (Ctrl+Shift+D)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+                showDebugInfo();
+                e.preventDefault();
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+
+</html>

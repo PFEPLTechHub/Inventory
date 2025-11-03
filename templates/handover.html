@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Handover Form</title>
+    <link rel="stylesheet" href="static/CSS/handover.css" />
+    <link rel="stylesheet" href="static/CSS/floating.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <div class="my-container">
+      <div class="my-container-header">
+        <button
+          class="btn btn-primary"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvasWithBothOptions"
+          aria-controls="offcanvasWithBothOptions"
+        >
+          >
+        </button>
+        <div
+          class="offcanvas offcanvas-start"
+          data-bs-scroll="true"
+          tabindex="-1"
+          id="offcanvasWithBothOptions"
+          aria-labelledby="offcanvasWithBothOptionsLabel"
+        >
+          <div class="offcanvas-header">
+            <div class="my-offcanvas-header">
+              <div class="header-image">
+                <img
+                  src="../static/Images/side-menu-header.jpg"
+                  alt="user image"
+                />
+              </div>
+              <div class="header-userid">
+                <h6 id="userid">User ID</h6>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="offcanvas"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="offcanvas-body">
+                    
+            <div class="section-container">
+                <div class="button-container">
+                    <button id="homepageBtn" class="home-page" data-bs-dismiss="offcanvas">Home Page</button>
+                </div>
+                
+            </div>
+            <div class="section-container" id="sendreceivesection">
+                <div class="button-container">
+                    <button id="sendItemsBtn" data-bs-dismiss="offcanvas">Send Items</button>
+                    <button id="receiveItemsBtn" data-bs-dismiss="offcanvas">Receive Items</button>
+                </div>
+            </div>
+            <div class="section-container" id="approveitemsection">
+                <div class="button-container">
+                    <button id="approveItemsBtn" class="approval-items" data-bs-dismiss="offcanvas">Approve Items</button>
+                </div>
+            </div>
+            <div class="section-container" id="inventorysection">
+                <div class="button-container">
+                    <button id="myInventoryBtn" data-bs-dismiss="offcanvas">My Inventory</button>
+                    <button id="projectInventoryBtn" data-bs-dismiss="offcanvas">Project Inventory</button>
+                    <button id="totalInventoryBtn" data-bs-dismiss="offcanvas">Total Inventory</button>
+                    <button id="inventoryMapBtn" data-bs-dismiss="offcanvas">Inventory Map</button>
+                </div>
+            </div>
+            <div class="section-container" id="transactionsection">
+                <div class="button-container">
+                    <button id="transactionProgressBtn" data-bs-dismiss="offcanvas">Transaction Progress</button>
+                    <button id="transactionHistoryBtn" data-bs-dismiss="offcanvas">Transaction History</button>
+                </div>
+            </div>
+            <div class="section-container" id="addeletesection">
+                <div class="button-container">
+                    <button id="additemBtn" data-bs-dismiss="offcanvas">Add Item</button>
+                    <button id="deleteitemBtn" data-bs-dismiss="offcanvas">Delete Item</button>
+                </div>
+            </div>
+            <div class="section-container" id="emppanelsection">
+                <div class="button-container">
+                    <button id="emppanel" data-bs-dismiss="offcanvas">Employee Panel</button>
+                </div>
+            </div>
+            <div class="section-container" id="myprofilesection">
+                <div class="button-container">
+                    <button id="myprofileBtn" data-bs-dismiss="offcanvas">My Profile</button>
+                </div>
+            </div>
+            <div class="logout-button-container">
+                <button id="logoutBtn" data-bs-dismiss="offcanvas">LOGOUT</button>
+            </div>
+        </div>
+        </div>
+        <div class="page-name">
+          <h2 id="h2">HANDOVER FORM</h2>
+        </div>
+        <div class="company-logo">
+          <img
+            src="../static/Images/logo.png"
+            alt="PFEPL Logo"
+            width="85"
+            height="85"
+          />
+        </div>
+      </div>
+      <form id="handoverForm">
+
+
+
+
+        
+        <div class="handoverform"id="kindlypullup">
+
+          <div class="handoverform-content" >
+            <label style="font-weight: bold">Sender :</label>
+            <label id="Sender">Loading Sender Name ....</label>
+          </div>
+          <div class="handoverform-content">
+            <label for="Receiver" style="font-weight: bold; margin-left: 120px;">Receiver :   </label>
+            <select
+              id="Receiver"
+              name="Receiver"
+              required
+              style = "margin-left: 30px;"
+            >
+              <option value="" disabled selected hidden>Select Person</option>
+            </select>
+          </div>
+        </div>
+        
+
+
+
+
+        <div class="handoverform">
+
+          
+          <div class="handoverform-content">
+            <label style="font-weight: bold">Source :</label>
+            <select id="Source" name="Source" required >
+              <option value="" disabled selected hidden>Select Project</option>
+            </select>
+          </div>
+          <label for="Destination" style="font-weight: bold; margin-left: 70px;"
+            >Destination : </label
+          >
+          <select
+            id="Destination"
+            name="Destination"
+            required
+            style = "margin-left: 10px;"
+          >
+            <option value="" disabled selected hidden>Select Project</option>
+          </select>
+        </div>
+        <div class="container">
+          <div class="table-button-container">
+            <div class="tabs">
+              <div class="tab" onclick="showItemsSelectedTab()">
+                <div class="button-container-tab">
+                  <button
+                    type="button"
+                    class="selected-items"
+                    id="selected-items"
+                  >
+                    SELECTED ITEMS
+                  </button>
+                </div>
+              </div>
+              <div class="tab" onclick="showSelectTab()">
+                <div class="button-container-tab">
+                  <button type="button" class="choose-items" id="choose-items">
+                    MY INVENTORY
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="table-container">
+            <div class="tab-content" id="itemsSelected">
+              <table id="maintable"></table>
+              <h4 id="no-items-selected"></h4>
+            </div>
+            <div class="tab-content" id="selectableTab">
+              <table></table>
+            </div>
+          </div>
+        </div>
+        <div class="transfer-button-container">
+          <button id="submitButton">TRANSFER ITEMS</button>
+        </div>
+      </form>
+      <div id="floatingBox">
+        <!-- Content of the floating box -->
+        <span id="messageText"></span>
+        <button id="okButton"><span>OK</span></button>
+
+      </div>
+      
+    </div>
+    <script src="../static/JS/handover.js"></script>
+    <script src="../static/JS/handover-extras.js"></script>
+    <script src="../static/JS/side_pane.js"></script>
+    <script src="../static/JS/floating.js"></script>
+    <script></script>
+    <script>
+      var sendItemsUrl = "{{ url_for('page_routes.send_items') }}";
+      var receiveItemsUrl = "{{ url_for('page_routes.receive_table') }}";
+      var approveItemsUrl = "{{ url_for('page_routes.approvetable') }}";
+      var transactionProgressUrl =
+        "{{ url_for('page_routes.transactionprogresstable') }}";
+      var transactionHistoryUrl =
+        "{{ url_for('page_routes.transactionhistorytable') }}";
+      var myInventoryUrl = "{{ url_for('page_routes.my_invent') }}";
+      var projectInventoryUrl = "{{ url_for('page_routes.project_invent') }}";
+      var totalInventoryUrl = "{{ url_for('page_routes.invent') }}";
+      var logoutBtnUrl = "{{ url_for('page_routes.index') }}";
+      var homepageBtnUrl = "{{ url_for('page_routes.homepage') }}";
+       var myprofileBtnUrl = "{{ url_for('page_routes.myprofilepage') }}";
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

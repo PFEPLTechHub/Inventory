@@ -1,0 +1,116 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.container {
+    background-color: #262626;
+    color: white;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Set height to 100% of viewport height */
+    width: 50%; /* Set width to half of the viewport width */
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    width: 50%;
+}
+
+.header-image {
+    width: 100%; /* Set width to 100% of the parent container (header) */
+    display: block; /* Ensure the image is displayed as a block element */
+    margin: 0 auto; /* Center the image horizontally */
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center; /* Center inline elements */
+    width: 50%; /* Set form width to 100% of container */
+    border-bottom: 2px solid white; /* Add a white bottom border */
+    padding-bottom: 15px; /* Add some padding to separate the border from the elements */
+}
+
+.login-form label {
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.login-form input {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 35px;
+    width: 75%;
+}
+
+.input-with-icon {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.input-with-icon .icon {
+    position: absolute;
+    left: 2%;
+    top: 30%;
+    transform: translateY(-50%);
+}
+
+.input-with-icon input {
+    padding-left: 40px; /* Adjust as needed based on icon width */
+}
+
+.login-form button {
+    background-color: #262626;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%; /* Set button width to 100% of container */
+    margin-top: 20px;
+}
+
+.login-form button:hover {
+    background-color: #404040;
+}
+
+.login-form a {
+    text-decoration: none;
+    color: #174eb5;
+    font-size: 0.8em;
+    margin-top: 10px;
+    display: block;
+    text-align: center;
+}
+
+.image-container {
+    width: 50%; /* Set width to half of the viewport width */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+}
+
+p {
+    color: white;
+}
+

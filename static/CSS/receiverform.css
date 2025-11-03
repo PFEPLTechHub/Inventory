@@ -1,0 +1,156 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: left;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.my-container {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    width: 100%;
+    height: auto;
+    padding-left: 0px;
+}
+
+.my-container-header {
+    display: inline-flex;
+    height: max-content;
+    width: 100%;
+}
+
+.page-name {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    padding-left: 20px;
+    margin-top: 15px;
+}
+
+.company-logo {
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
+.back-button {
+    color: white;
+    background-color: #262626;
+    border-radius: 5px;
+    border: #262626;
+    margin-top: 18px;
+    margin-left: 5px;
+    max-height: 35px;
+    width: 35px;
+}
+
+.back-button:hover {
+    background-color: #404040;
+    border-color: #404040;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    color: black;
+    margin-top: 0.5%;
+    height: max-content;
+    width: max-content !important;
+    padding: 0% !important;
+    border-radius: 5px;
+    overflow: auto;
+}
+
+.table {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    margin-bottom: 20px !important;
+}
+
+.container table {
+    border-collapse: collapse;
+    font-size: 10px !important;
+}
+
+.container th, td {
+    width: 25%;
+    border: 1px solid black !important;
+    padding: 8px;
+    text-align: left;
+    font-size: 15px !important;
+}
+
+.container th {
+    background-color: lightgrey !important;
+}
+
+.my-container-footer {
+    margin-top: 2%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 100px;
+
+}
+
+.my-container-footer-button {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.my-container-footer button {
+    background-color: #262626;
+    color: white;
+    border-radius: 10px;
+    border: 1px solid #262626;
+    padding: 10px 20px;
+}
+
+.ask-approval-button {
+    background-color: #262626;
+    color: white;
+    border-radius: 10px;
+    border: 1px solid #262626;
+    padding: 10px 20px;
+}
+
+.ask-approval-button:hover {
+    background-color: #404040e4;
+    cursor: pointer;
+}
+
+.my-container-footer-top {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+
+#forewaybill {
+    margin-top: 1%;
+    margin-left: 1%;
+    font-size: 17px;
+    margin-top: 10px;
+}
+
+#disapproveremarks {
+    margin-left: 2%;
+    width: 45%;
+    height: 40px; /* Set the height to 100% of the container */
+
+}
+
+
+
+/* Hide the remarks container by default */
+#remarksContainer {
+    display: none;
+    height: 100%;
+}

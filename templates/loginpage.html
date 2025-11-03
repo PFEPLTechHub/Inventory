@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="../static/CSS/loginpage.css">
+    <link rel="stylesheet" href="../static/CSS/floating.css">
+
+</head>
+<body>
+    <div class="container">
+        <h2>LOGIN PAGE</h2>
+        <div class="header">
+            <img src="../static/Images/loginheader.png" alt="login header" class="header-image">
+        </div>
+        <div class="login-form">
+            <form id="loginForm" action="/login" method="post">
+                <div class="input-with-icon">
+                    <span class="icon">
+                        <img src="../static/Images/username_logo.png" alt="Username Icon">
+                    </span>
+                    <input type="text" id="username" name="username" placeholder="Username">
+                </div>
+                <div class="input-with-icon">
+                    <span class="icon">
+                        <img src="../static/Images/password_icon.png" alt="Password Icon">
+                    </span>
+                    <input type="password" id="password" name="password" placeholder="Password">
+                </div>
+                <button type="submit">Log In</button>
+                
+            </form>
+        </div>
+    </div>
+    <div class="image-container">
+        <img src="../static/Images/logo.png" alt="PFEPL Logo">
+    </div>
+    <div id="floatingBox">
+        <!-- Content of the floating box -->
+        <span id="messageText"></span>
+        <button id="okButton"><span>OK</span></button>
+    </div>
+
+    <script src="../static/JS/floating.js"></script>
+    <script src="../static/JS/login.js"></script>
+</body>
+</html>

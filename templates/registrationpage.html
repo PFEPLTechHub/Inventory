@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/CSS/floating.css">
+    <link rel="stylesheet" href="../static/CSS/registration.css">
+
+    <title>Registration Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        form {
+            max-width: 400px;
+            margin: auto;
+            padding: 1em;
+            border: 1px solid #ccc;
+            border-radius: 1em;
+        }
+        div {
+            margin-bottom: 1em;
+        }
+        label {
+            margin-bottom: .5em;
+            color: #333333;
+            display: block;
+        }
+        input, select {
+            border: 1px solid #CCCCCC;
+            padding: .5em;
+            font-size: 1em;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 0.7em;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #cccccc;
+        }
+        .photo-preview {
+            display: flex;
+            align-items: center;
+        }
+        .photo-preview img {
+            max-width: 100px;
+            margin-right: 1em;
+        }
+        .photo-preview button {
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 0.2em 0.5em;
+        }
+    </style>
+</head>
+<body>
+    <button id="back-button" class="back-button" type="button">&lt;</button>
+
+<form id="registerForm">
+    <div>
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required>
+    </div>
+    <div>
+        <label for="id">ID</label>
+        <input type="text" id="id" name="id" required>
+    </div>
+    
+    <div>
+        <label for="mail">Email</label>
+        <input type="email" id="mail" name="mail" required>
+    </div>
+    <div>
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" required>
+    </div>
+    <div>
+        <label for="typeofaccount">Type of Account</label>
+        <select id="typeofaccount" name="typeofaccount" required>
+            <option value="Employee">Employee</option>
+            <option value="Manager">Manager</option>
+        </select>
+    </div>
+    <div>
+        <label for="project">Project</label>
+        <select id="project" name="project" required>
+            <!-- Add more projects as needed -->
+        </select>
+    </div>
+   
+    <div>
+        <button class ="registerbutton" type="submit">Register</button>
+    </div>
+</form>
+<div id="floatingBox">
+    <!-- Content of the floating box -->
+    <span id="messageText"></span>
+    <button id="okButton"><span>OK</span></button>
+</div>
+<script src="../static/JS/floating.js"></script>
+
+<script>
+
+
+window.onload = function () {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "/get_projects_for_registration", true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            const projects = response.projects;
+            const projectSelect = document.getElementById('project');
+            console.log('Projects:', projects);
+
+            // Clear existing options
+            projectSelect.innerHTML = '';
+
+            // Add a default option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = '-- Select Project --';
+            projectSelect.appendChild(defaultOption);
+
+            // Populate dropdown with project name and ID
+            projects.forEach(function (project) {
+                const option = document.createElement('option');
+                option.value = project.project_id;            // Send project_id in form
+                option.textContent = project.Projects;        // Display project name
+                projectSelect.appendChild(option);
+            });
+        }
+    };
+    xhr.send();
+};
+
+
+        document.getElementById('back-button').addEventListener('click', function() {
+            window.location.href = '/emppanelpage';
+        });
+    
+document.getElementById('registerForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    
+
+    let email = document.getElementById('mail').value;
+    if (!email.includes('@')) {
+        floatingMessageBox("Invalid email address.");
+        return;
+    }
+
+    let name = document.getElementById('name').value;
+    let id = document.getElementById('id').value;
+
+    // Prepare the form data
+    let formData = new FormData();
+    formData.append('name',name);
+    formData.append('id', id);
+    // formData.append('pass', pass);
+    formData.append('mail', email);
+    formData.append('phone', document.getElementById('phone').value);
+    formData.append('typeofaccount', document.getElementById('typeofaccount').value);
+    formData.append('project', document.getElementById('project').value);
+    // formData.append('photo', photo);
+console.log("this is the form data for registering that we are sending")
+console.log(formData)
+
+    // Send the form data via AJAX
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/registeremployee');
+    xhr.onload = function() {
+        let response = JSON.parse(xhr.responseText);
+        if (xhr.status === 200) {
+            floatingMessageBox(response.message);
+            // Reset the form after successful registration
+            document.getElementById('registerForm').reset();
+            // document.getElementById('photoPreview').style.display = 'none';
+        } else {
+            floatingMessageBox(response.message);
+        }
+    };
+    xhr.send(formData);
+});
+
+</script>
+
+</body>
+</html>

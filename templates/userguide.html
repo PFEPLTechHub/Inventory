@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video and PDF Display</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            position: absolute;
+            top: 0;
+        }
+        .header-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .company-logo {
+            margin-right: 10px;
+        }
+        .company-logo img {
+            width: 85px;
+            height: 85px;
+        }
+        .back-button {
+            color: white;
+            background-color: #262626;
+            border-radius: 5px;
+            border: #262626;
+            margin: 5px;
+            height: 35px;
+            width: 35px;
+        }
+        .back-button:hover {
+            background-color: #404040;
+            border-color: #404040;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .video-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .button-container img {
+            width: 50px;
+            height: 50px;
+        }
+        #pdfbutton {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #262626;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        #pdfbutton:hover {
+            background-color: red;
+            color: white;
+        }
+        #replay-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #262626;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        #replay-button:hover {
+            background-color: red;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button id="back-button" class="back-button" type="button">&lt;</button>
+        <h1 class="header-title">Inventory System Guide</h1>
+        <div class="company-logo">
+            <img src="../static/Images/logo.png" alt="PFEPL Logo">
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="video-container">
+            <video id="my-video" width="800" height="450" muted>
+                <source src="static/Videos/process.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <div class="button-container">
+            <button id="replay-button" onclick="replayVideo()">Play Video</button>
+            <button id="pdfbutton" onclick="openPDF()">Click here to Read PDF</button>
+        </div>
+    </div>
+
+    <script>
+        function openPDF() {
+            window.open('static/Files/userguide.pdf', '_blank');
+        }
+
+        document.getElementById('back-button').addEventListener('click', function() {
+            window.location.href = '/homepage';
+        });
+
+        function replayVideo() {
+            var video = document.getElementById('my-video');
+            video.currentTime = 0;
+            video.play();
+        }
+    </script>
+</body>
+</html>
