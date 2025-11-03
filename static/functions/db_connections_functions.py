@@ -6,9 +6,9 @@ import time
 def create_connection_pool():
     dbconfig = {
         "host": "localhost",
-        "user": "root",
-        "password": "root",
-        "database": "inventory_db",
+        "user": "u221987201_Shayan123",
+        "password": "ShayanPFEPL@123",  # Replace with your actual database password
+        "database": "u221987201_Inventory",
         "pool_name": "erp_pool",
         "pool_size": 10,
         "connection_timeout": 10,  # 10 seconds timeout for establishing connection
